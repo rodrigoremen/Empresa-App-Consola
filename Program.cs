@@ -1,102 +1,117 @@
-class Program
-
+public class Empresa
 {
-    static void Main(string[] args)
+    public decimal CalcularBono(int depto, int antiguedad)
     {
-        Console.WriteLine("Ingrese la antigüedad del empleado en meses:");
+        decimal salarioMinimo = 207.44m;
+        decimal bonoEmpleado = 0;
 
-        if (!int.TryParse(Console.ReadLine(), out int antiguedad))
+        switch ((depto, antiguedad))
         {
-            Console.WriteLine("Error: ¡Ingrese solo números!");
-            return;
+            case (1, var a) when a < 24:
+                bonoEmpleado = salarioMinimo * 5m;
+                break;
+            case (1, var a) when a >= 24:
+                bonoEmpleado = salarioMinimo * 8m;
+                break;
+            case (2, var a) when a < 36:
+                bonoEmpleado = salarioMinimo * 9m;
+                break;
+            case (2, var a) when a >= 36:
+                bonoEmpleado = salarioMinimo * 12m;
+                break;
+            case (3, var a) when a < 60:
+                bonoEmpleado = salarioMinimo * 14m;
+                break;
+            case (3, var a) when a >= 60:
+                bonoEmpleado = salarioMinimo * 17m;
+                break;
+            default:
+                bonoEmpleado = 0;
+                break;
         }
 
-        Console.WriteLine("Ingrese la cantidad de hijos del empleado:");
-
-        if (!int.TryParse(Console.ReadLine(), out int cantidadHijos))
-        {
-            Console.WriteLine("Error: ¡Ingrese solo números!");
-            return;
-        }
-
-        string departamento = CalcularDepartamento(antiguedad);
-        double bonoAntiguedad = CalcularBonoAntiguedad(departamento, antiguedad);
-        double bonoHijos = CalcularBonoHijos(cantidadHijos);
-
-        double bonoTotal = bonoAntiguedad + bonoHijos;
-
-        Console.WriteLine("El departamento del empleado es: " + departamento);
-        Console.WriteLine("El bono por antigüedad es: " + bonoAntiguedad);
-        Console.WriteLine("El bono por hijos es: " + bonoHijos);
-        Console.WriteLine("El bono total es: " + bonoTotal);
+        return bonoEmpleado;
     }
 
-    static string CalcularDepartamento(int antiguedad)
+    public decimal CalcularRegaloNavideno(int numHijos)
     {
-        if (antiguedad < 24 || (antiguedad >= 24 && antiguedad <= 35))
+        decimal regalo = 120m;
+        decimal totalRegalo = regalo * numHijos;
+
+        return totalRegalo;
+    }
+}
+
+public class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("         EMPRESA IMPRENTA");
+        Console.WriteLine("Ingresa el departamento al que perteneces: ");
+        Console.WriteLine("1.- A");
+        Console.WriteLine("2.- B");
+        Console.WriteLine("3.- C");
+        if (int.TryParse(Console.ReadLine(), out int depto))
         {
-            return "a";
-        }
-        else if (antiguedad < 36 || (antiguedad >= 36 && antiguedad <= 59))
-        {
-            return "b";
+            Console.WriteLine("---------------------------------------------");
+            if (depto >= 1 && depto <= 3)
+            {
+                Console.WriteLine("Ingresa tu antiguedad en meses: ");
+                if (int.TryParse(Console.ReadLine(), out int antiguedad) && antiguedad > 0)
+                {
+                    Console.WriteLine("---------------------------------------------");
+                    Empresa empresa = new Empresa();
+                    decimal bono = empresa.CalcularBono(depto, antiguedad);
+                    Console.WriteLine("¿Tiene hijos? 1.- Si   2.- No");
+                    if (int.TryParse(Console.ReadLine(), out int hijos))
+                    {
+                        Console.WriteLine("---------------------------------------------");
+                        if (hijos == 1)
+                        {
+                            Console.WriteLine("Ingrese el número de hijos que tiene:");
+                            if (int.TryParse(Console.ReadLine(), out int numHijos) && numHijos > 0 && numHijos <= 10)
+                            {
+                                Console.WriteLine("---------------------------------------------");
+                                decimal regalo = empresa.CalcularRegaloNavideno(numHijos);
+                                Console.WriteLine("***************************************************************************");
+                                Console.WriteLine($"El monto para los regalos de sus {numHijos} hijos es de : ${regalo}");
+                                Console.WriteLine($"Bono: ${bono}");
+                                Console.WriteLine($"Total a recibir: ${bono + regalo}");
+                                Console.WriteLine("***************************************************************************");
+                            }
+                            else
+                            {
+                                Console.WriteLine("El dato ingresado NO ES UN NÚMERO VÁLIDO DE HIJOS");
+                            }
+                        }
+                        else if (hijos == 2)
+                        {
+                            Console.WriteLine("No tiene hijos, por lo tanto no recibirá más dinero aparte de su bono");
+                            Console.WriteLine($"El bono total calculado es: ${bono}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No es una opción VÁLIDA");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("El dato ingresado NO ES UN NÚMERO");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("El dato ingresado NO ES UN NÚMERO o es un número negativo");
+                }
+            }
+            else
+            {
+                Console.WriteLine("OPCIÓN NO VÁLIDA");
+            }
         }
         else
         {
-            return "c";
+            Console.WriteLine("El dato ingresado NO ES UN NÚMERO");
         }
     }
-
-    static double CalcularBonoAntiguedad(string departamento, int antiguedad)
-    {
-        double salarioMinimo = 180;
-
-        if (departamento == "a")
-        {
-            if (antiguedad < 24)
-            {
-                return 5 * salarioMinimo;
-            }
-            else
-            {
-                return 8 * salarioMinimo;
-            }
-        }
-        else if (departamento == "b")
-        {
-            if (antiguedad < 36)
-            {
-                return 9 * salarioMinimo;
-            }
-            else
-            {
-                return 12 * salarioMinimo;
-            }
-        }
-        else if (departamento == "c")
-        {
-            if (antiguedad < 60)
-            {
-                return 14 * salarioMinimo;
-            }
-            else
-            {
-                return 17 * salarioMinimo;
-            }
-        }
-        else
-        {
-            Console.WriteLine("Departamento inválido.");
-            return 0;
-        }
-    }
-
-    static double CalcularBonoHijos(int cantidadHijos)
-    {
-        double bonoPorHijo = 150;
-
-        return bonoPorHijo * cantidadHijos;
-    }
-
-
 }
